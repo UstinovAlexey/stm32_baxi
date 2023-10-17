@@ -2,13 +2,19 @@ import network
 import time
 
 eth=network.LAN()
-eth.active(1)
-for i in range (5):
+try:
+    eth.active(1)
+    for i in range (5):
     
-    print(eth.ifconfig())
-    print ("Hello!",i,eth.isconnected())
+        print(eth.ifconfig())
+        print ("Waiting DHCP")
     
-    time.sleep(3)
+        if eth.isconnected():
+            break
+    
+        time.sleep(3)
+except:
+    print ("No Ethernet connection")
     
 
 
