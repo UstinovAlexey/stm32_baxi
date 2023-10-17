@@ -23,18 +23,16 @@ mqttClient.set_callback(sub_cb)
 mqttClient.connect()
 mqttClient.subscribe(SUBSCRIBE_TOPIC)
 
-for i in range (10):
+for i in range (30):
     time.sleep(1)
     # Non-blocking wait for message
     mqttClient.check_msg()
             
     if needGitOTAupdate==True:
         mqttClient.publish(PUBLISH_TOPIC, "OTA: Now Git pulled...")
-        print("ww")
 
     else:
         mqttClient.publish(PUBLISH_TOPIC, "Waiting OTA Cmd {}".format(i))
-        print("w")
 
 if needGitOTAupdate==True:
         ugit.pull_all()
