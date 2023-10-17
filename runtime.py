@@ -1,4 +1,3 @@
-# main.py -- put your code here!
 import nic
 import time 
 from umqtt import MQTTClient

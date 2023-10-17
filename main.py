@@ -1,6 +1,8 @@
 # main.py -- put your code here!
 import nic
-import time 
+import time
+import ugit
+
 from umqtt import MQTTClient
 MQTT_BROKER = "192.168.20.55"
 CLIENT_ID = "stm32_baxi"
@@ -11,7 +13,7 @@ gitver="V1"
 def sub_cb(topic, msg):
     print((topic, msg))
     if (topic==b"baxi/GitOTA") and (msg==b"PullGit"):
-        print ("!!!")
+        ugit.pull_all()
 
 mqttClient = MQTTClient(CLIENT_ID, MQTT_BROKER, port=1883,user="user",password="89127634678",keepalive=60)
 mqttClient.set_callback(sub_cb)
@@ -23,9 +25,10 @@ for i in range (10):
     # Non-blocking wait for message
     mqttClient.check_msg()
     
-
     mqttClient.publish(PUBLISH_TOPIC, "Waiting OTA Cmd {}".format(i))
 
     
 mqttClient.publish(PUBLISH_TOPIC, "Run application. GitVer={}".format(gitver))
- 
+
+#run application
+import runtime
