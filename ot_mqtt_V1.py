@@ -18,16 +18,13 @@ PUBLISH_TOPIC = b"baxi/temp"
 Tset_cur=30
 Tset_new=30
 Tset_need_set=False
-Status_new=3
-
 
 # Received messages from subscriptions will be delivered to this callback
 def sub_cb(topic, msg):
-    global Tset_new,Tset_need_set,Status_new,Status_need_set
+    global Tset_new,Tset_need_set
     print((topic, msg))
-    if (topic==b"baxi/status"):#and (msg==b"PullGit"):
-        Status_new=int(msg)
-
+    if (topic==b"baxi/status") and (msg==b"PullGit"):
+        print ("!!!")
         
     if (topic==b"baxi/Tset"):
         Tset_new=float(msg)
@@ -52,7 +49,7 @@ mqttClient.connect()
 mqttClient.subscribe(SUBSCRIBE_TOPIC)
 mqttClient.subscribe("baxi/status")
 
-#mqttClient.publish("baxi/status", "Idle")
+mqttClient.publish("baxi/status", "Idle")
 
 
 print("Start3_2")
@@ -369,7 +366,7 @@ while (True):
 
     print("Read Status. ",end="")
     pin_in_mode=0
-    ot.send(buildRerquest(0,0,Status_new*256)) #enable CH & DHW
+    ot.send(buildRerquest(0,0,0x300)) #enable CH & DHW
     #ot.send(buildRerquest(0,0,0x000)) #-disable boiler
 
     time.sleep(0.06)
@@ -491,6 +488,5 @@ async def main ():
 #asyncio.run(main())
 
       
-
 
 

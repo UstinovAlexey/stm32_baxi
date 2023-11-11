@@ -23,7 +23,7 @@ mqttClient.set_callback(sub_cb)
 mqttClient.connect()
 mqttClient.subscribe(SUBSCRIBE_TOPIC)
 
-for i in range (30):
+for i in range (10):
     time.sleep(1)
     # Non-blocking wait for message
     mqttClient.check_msg()

@@ -4,60 +4,19 @@ import micropython
 
 micropython.alloc_emergency_exception_buf(100)
 
-import nic
-from umqtt import MQTTClient
-import time
-import random
-
-# Default  MQTT_BROKER to connect to
-MQTT_BROKER = "192.168.20.55"
-CLIENT_ID = "stm32_baxi"
-SUBSCRIBE_TOPIC = b"baxi/Tset"
-PUBLISH_TOPIC = b"baxi/temp"
-
-Tset_cur=30
-Tset_new=30
-Tset_need_set=False
-Status_new=3
-
-
-# Received messages from subscriptions will be delivered to this callback
-def sub_cb(topic, msg):
-    global Tset_new,Tset_need_set,Status_new,Status_need_set
-    print((topic, msg))
-    if (topic==b"baxi/status"):#and (msg==b"PullGit"):
-        Status_new=int(msg)
-
-        
-    if (topic==b"baxi/Tset"):
-        Tset_new=float(msg)
-        Tset_need_set=True
-        #if (Tset_new!=Tset_cur):
-        #    Tset_need_set=True
-            
-
-
-def reset():
-    print("Resetting...")
-    time.sleep(5)
-    machine.reset()
-
-def get_temperature_reading():
-    return random.randint(20, 50)
-
-
-mqttClient = MQTTClient(CLIENT_ID, MQTT_BROKER, port=1883,user="user",password="89127634678",keepalive=60)
-mqttClient.set_callback(sub_cb)
-mqttClient.connect()
-mqttClient.subscribe(SUBSCRIBE_TOPIC)
-mqttClient.subscribe("baxi/status")
-
-#mqttClient.publish("baxi/status", "Idle")
-
-
-print("Start3_2")
+print("Start2_2")
 
 btn=pyb.Pin("C13")
+import time
+import network
+eth=network.LAN()
+eth.active(1)
+eth.ifconfig('dhcp')
+while(1):
+    print(eth.ifconfig())
+    time.sleep(1)
+
+
 
 
 
@@ -259,19 +218,14 @@ while (True):
     #    pass
     #print("cikles=",ot.cikles)
     #ot.send(0x90014000)
-
-    if Tset_need_set==True:
-        Tset_need_set=False
-        Tset_cur=Tset_new
-        
-        print("Set setpoint={}".format(Tset_new),end="")
-        
+    if 0:
+        print("Set setpoint.",end="")
         pin_in_mode=0 #disable read answer
-        ot.send(buildRerquest(1,1,Tset_new))
+        ot.send(buildRerquest(1,1,40.0))
         time.sleep(0.06)
         pin_in_mode=1 #enable read answer
-        time.sleep(0.5)
-        print("answer=",hex(answer_h*65536+answer_l),end=" ")
+        time.sleep(1)
+        print("answer=",hex(answer_h*65536+answer_l))
         print(" ")
     
     if 0:
@@ -339,10 +293,6 @@ while (True):
     #print(" ")
 
     print("Tboiler={} Tret={} Tdhw={} DHW Flow={}".format(Tboiler,Tret,Tdhw,DHWFlow))
-    mqttClient.publish("baxi/Tboiler", str(Tboiler))
-    mqttClient.publish("baxi/Tret", str(Tret))
-    mqttClient.publish("baxi/Tdhw", str(Tdhw))
-    mqttClient.publish("baxi/DHWFlow", str(DHWFlow))
     
 #    print("Read Modulation level.",end="")
     pin_in_mode=0
@@ -369,8 +319,8 @@ while (True):
 
     print("Read Status. ",end="")
     pin_in_mode=0
-    ot.send(buildRerquest(0,0,Status_new*256)) #enable CH & DHW
-    #ot.send(buildRerquest(0,0,0x000)) #-disable boiler
+    # ot.send(buildRerquest(0,0,0x300)) #enable CH & DHW
+    ot.send(buildRerquest(0,0,0x000)) #-disable boiler
 
     time.sleep(0.06)
     pin_in_mode=1 #enable read answer
@@ -379,18 +329,7 @@ while (True):
     Status=hex(answer_l)
     #print("Status Measured temp=",answer_l/256.0)
     print("Status={} ASF_OEM={} ModulationLevel={} ".format(Status,ASF_OEM,ModLevel))
-    mqttClient.publish("baxi/Status",Status)
-    mqttClient.publish("baxi/ASF_OEM",ASF_OEM)
-    mqttClient.publish("baxi/ModLevel",str(ModLevel))
-
-    # Non-blocking wait for message
-    mqttClient.check_msg()
     
-    random_temp = get_temperature_reading()
-    mqttClient.publish(PUBLISH_TOPIC, str(random_temp).encode())
-    mqttClient.publish("baxi/output", "Hello, World {}".format(2*3))
-
-
     if 0:
         print("Read  5 Status")
         pin_in_mode=0
@@ -491,6 +430,4 @@ async def main ():
 #asyncio.run(main())
 
       
-
-
 
