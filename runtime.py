@@ -65,7 +65,7 @@ mqttClient.subscribe(SUBSCRIBE_TOPIC)
 mqttClient.subscribe("baxi/status")
 mqttClient.subscribe("baxi/GitOTA")
 
-mqttClient.publish("baxi/status", "Idle!!!")
+mqttClient.publish("baxi/status", "Idle!!5")
 
 
 print("Start3_2")
