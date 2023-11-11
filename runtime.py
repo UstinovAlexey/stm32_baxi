@@ -37,9 +37,9 @@ def sub_cb(topic, msg):
         else:
            Status_new=2
 
-        if (topic==b"baxi/GitOTA") and (msg==b"reset"):
-           import machine
-           machine.reset()
+    if (topic==b"baxi/GitOTA") and (msg==b"reset"):   
+        import machine
+        machine.reset()
         
     if (topic==b"baxi/Tset"):
         Tset_new=float(msg)
