@@ -30,12 +30,12 @@ def sub_cb(topic, msg):
         try:
             Status_new=int(msg)
         except:
-            Status_new=2
+            Status_new=3
             
-        if Status_new==0 or Status_new==1 or Status_new==2:
+        if Status_new>=0 and Status_new<=3:
             pass
         else:
-           Status_new=2
+           Status_new=3
 
     if (topic==b"baxi/GitOTA") and (msg==b"reset"):   
         import machine
