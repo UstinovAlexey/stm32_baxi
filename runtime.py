@@ -26,7 +26,15 @@ def sub_cb(topic, msg):
     global Tset_new,Tset_need_set,Status_new,Status_need_set
     print((topic, msg))
     if (topic==b"baxi/status"):#and (msg==b"PullGit"):
-        Status_new=int(msg)
+        try:
+            Status_new=int(msg)
+        except:
+            Status_new=2
+            
+        if Status_new==0 or Status_new==1 or Status_new==2:
+            pass
+        else:
+           Status_new=2
 
         
     if (topic==b"baxi/Tset"):
