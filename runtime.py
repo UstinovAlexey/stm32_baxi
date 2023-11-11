@@ -21,6 +21,7 @@ Tset_need_set=False
 Status_new=3
 
 
+
 # Received messages from subscriptions will be delivered to this callback
 def sub_cb(topic, msg):
     global Tset_new,Tset_need_set,Status_new,Status_need_set
@@ -36,6 +37,9 @@ def sub_cb(topic, msg):
         else:
            Status_new=2
 
+        if (topic==b"baxi/GitOTA") and (msg==b"reset"):
+           import machine
+           machine.reset()
         
     if (topic==b"baxi/Tset"):
         Tset_new=float(msg)
@@ -59,8 +63,9 @@ mqttClient.set_callback(sub_cb)
 mqttClient.connect()
 mqttClient.subscribe(SUBSCRIBE_TOPIC)
 mqttClient.subscribe("baxi/status")
+mqttClient.subscribe("baxi/GitOTA")
 
-#mqttClient.publish("baxi/status", "Idle")
+mqttClient.publish("baxi/status", "Idle!!!")
 
 
 print("Start3_2")
