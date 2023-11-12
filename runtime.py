@@ -19,12 +19,14 @@ Tset_cur=30
 Tset_new=30
 Tset_need_set=False
 Status_new=3
+ExtCMD_need_send=False
+ExtCMD_req=""
 
 
 
 # Received messages from subscriptions will be delivered to this callback
 def sub_cb(topic, msg):
-    global Tset_new,Tset_need_set,Status_new,Status_need_set
+    global Tset_new,Tset_need_set,Status_new,Status_need_set,ExtCMD_need_send,ExtCMD_req
     print((topic, msg))
     if (topic==b"baxi/status"):#and (msg==b"PullGit"):
         try:
@@ -37,9 +39,14 @@ def sub_cb(topic, msg):
         else:
            Status_new=3
 
-    if (topic==b"baxi/GitOTA") and (msg==b"reset"):   
+    if (topic==b"baxi/GitOTA") and (msg==b"PullGit"):   
         import machine
         machine.reset()
+        
+    if (topic==b"baxi/ExtCMD_req"):
+        ExtCMD_need_send=True
+        ExtCMD_req=msg
+
         
     if (topic==b"baxi/Tset"):
         Tset_new=float(msg)
@@ -64,6 +71,7 @@ mqttClient.connect()
 mqttClient.subscribe(SUBSCRIBE_TOPIC)
 mqttClient.subscribe("baxi/status")
 mqttClient.subscribe("baxi/GitOTA")
+mqttClient.subscribe("baxi/ExtCMD_req")
 
 mqttClient.publish("baxi/status", "Idle!!5")
 
@@ -272,6 +280,26 @@ while (True):
     #    pass
     #print("cikles=",ot.cikles)
     #ot.send(0x90014000)
+    
+    if ExtCMD_need_send==True:
+        ExtCMD_need_send=False
+        import json
+        try:
+            ExtCMD=json.loads(ExtCMD_req)
+                        
+            pin_in_mode=0 #disable read answer
+            ot.send(buildRerquest(ExtCMD[0],ExtCMD[1],ExtCMD[2]))
+            time.sleep(0.06)
+            pin_in_mode=1 #enable read answer
+            time.sleep(0.5)
+
+            answer=[hex((answer_h//4096)&7),answer_h % 256,answer_l,hex(answer_l),answer_l/256.0]
+            mqttClient.publish("baxi/ExtCMD_ans", json.dumps(answer))      
+            #print("ExtCMD is: ",type(json.loads(ExtCMD_req)))
+        except:
+
+            print("error json import ExtCMD_req=",ExtCMD_req)
+       
 
     if Tset_need_set==True:
         Tset_need_set=False
@@ -504,6 +532,8 @@ async def main ():
 #asyncio.run(main())
 
       
+
+
 
 
 
