@@ -2,19 +2,22 @@
 import nic
 import time
 import ugit
+from board import CLIENT_ID as CLIENT_ID
+from board import MQTT_PREFIX as MQTT_PREFIX
+
 
 from umqtt import MQTTClient
 MQTT_BROKER = "192.168.20.55"
-CLIENT_ID = "stm32_baxi"
-SUBSCRIBE_TOPIC = b"baxi/GitOTA"
-PUBLISH_TOPIC = b"baxi/GitOTA"
-gitver="V1"
+#CLIENT_ID = "stm32_baxi"
+SUBSCRIBE_TOPIC = MQTT_PREFIX+"GitOTA"
+PUBLISH_TOPIC = MQTT_PREFIX+"GitOTA"
+gitver="V2"
 needGitOTAupdate=False
 
 def sub_cb(topic, msg):
     global needGitOTAupdate
     print((topic, msg))
-    if (topic==b"baxi/GitOTA") and (msg==b"PullGit"):
+    if (topic==MQTT_PREFIX+"GitOTA") and (msg==b"PullGit"):
         needGitOTAupdate=True
 
 

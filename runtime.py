@@ -8,12 +8,15 @@ import nic
 from umqtt import MQTTClient
 import time
 import random
+from board import CLIENT_ID as CLIENT_ID
+from board import MQTT_PREFIX as MQTT_PREFIX
+
 
 # Default  MQTT_BROKER to connect to
 MQTT_BROKER = "192.168.20.55"
-CLIENT_ID = "stm32_baxi"
-SUBSCRIBE_TOPIC = b"baxi/Tset"
-PUBLISH_TOPIC = b"baxi/temp"
+
+SUBSCRIBE_TOPIC = MQTT_PREFIX+"Tset"
+PUBLISH_TOPIC = MQTT_PREFIX+"temp"
 
 Tset_cur=30
 Tset_new=30
@@ -28,7 +31,7 @@ ExtCMD_req=""
 def sub_cb(topic, msg):
     global Tset_new,Tset_need_set,Status_new,Status_need_set,ExtCMD_need_send,ExtCMD_req
     print((topic, msg))
-    if (topic==b"baxi/status"):#and (msg==b"PullGit"):
+    if (topic==MQTT_PREFIX+"status"):#and (msg==b"PullGit"):
         try:
             Status_new=int(msg)
         except:
@@ -39,16 +42,16 @@ def sub_cb(topic, msg):
         else:
            Status_new=3
 
-    if (topic==b"baxi/GitOTA") and (msg==b"PullGit"):   
+    if (topic==MQTT_PREFIX+"GitOTA") and (msg==b"PullGit"):   
         import machine
         machine.reset()
         
-    if (topic==b"baxi/ExtCMD_req"):
+    if (topic==MQTT_PREFIX+"ExtCMD_req"):
         ExtCMD_need_send=True
         ExtCMD_req=msg
 
         
-    if (topic==b"baxi/Tset"):
+    if (topic==MQTT_PREFIX+"Tset"):
         Tset_new=float(msg)
         Tset_need_set=True
         #if (Tset_new!=Tset_cur):
@@ -69,11 +72,11 @@ mqttClient = MQTTClient(CLIENT_ID, MQTT_BROKER, port=1883,user="user",password="
 mqttClient.set_callback(sub_cb)
 mqttClient.connect()
 mqttClient.subscribe(SUBSCRIBE_TOPIC)
-mqttClient.subscribe("baxi/status")
-mqttClient.subscribe("baxi/GitOTA")
-mqttClient.subscribe("baxi/ExtCMD_req")
+mqttClient.subscribe(MQTT_PREFIX+"status")
+mqttClient.subscribe(MQTT_PREFIX+"GitOTA")
+mqttClient.subscribe(MQTT_PREFIX+"ExtCMD_req")
 
-mqttClient.publish("baxi/status", "Idle!!5")
+mqttClient.publish(MQTT_PREFIX+"status", "Idle!!5")
 
 
 print("Start3_2")
@@ -294,7 +297,7 @@ while (True):
             time.sleep(0.5)
 
             answer=[hex((answer_h//4096)&7),answer_h % 256,answer_l,hex(answer_l),answer_l/256.0]
-            mqttClient.publish("baxi/ExtCMD_ans", json.dumps(answer))      
+            mqttClient.publish(MQTT_PREFIX+"ExtCMD_ans", json.dumps(answer))      
             #print("ExtCMD is: ",type(json.loads(ExtCMD_req)))
         except:
 
@@ -380,10 +383,10 @@ while (True):
     #print(" ")
 
     print("Tboiler={} Tret={} Tdhw={} DHW Flow={}".format(Tboiler,Tret,Tdhw,DHWFlow))
-    mqttClient.publish("baxi/Tboiler", str(Tboiler))
-    mqttClient.publish("baxi/Tret", str(Tret))
-    mqttClient.publish("baxi/Tdhw", str(Tdhw))
-    mqttClient.publish("baxi/DHWFlow", str(DHWFlow))
+    mqttClient.publish(MQTT_PREFIX+"Tboiler", str(Tboiler))
+    mqttClient.publish(MQTT_PREFIX+"Tret", str(Tret))
+    mqttClient.publish(MQTT_PREFIX+"Tdhw", str(Tdhw))
+    mqttClient.publish(MQTT_PREFIX+"DHWFlow", str(DHWFlow))
     
 #    print("Read Modulation level.",end="")
     pin_in_mode=0
@@ -420,16 +423,16 @@ while (True):
     Status=hex(answer_l)
     #print("Status Measured temp=",answer_l/256.0)
     print("Status={} ASF_OEM={} ModulationLevel={} ".format(Status,ASF_OEM,ModLevel))
-    mqttClient.publish("baxi/Status",Status)
-    mqttClient.publish("baxi/ASF_OEM",ASF_OEM)
-    mqttClient.publish("baxi/ModLevel",str(ModLevel))
+    mqttClient.publish(MQTT_PREFIX+"Status",Status)
+    mqttClient.publish(MQTT_PREFIX+"ASF_OEM",ASF_OEM)
+    mqttClient.publish(MQTT_PREFIX+"ModLevel",str(ModLevel))
 
     # Non-blocking wait for message
     mqttClient.check_msg()
     
     random_temp = get_temperature_reading()
     mqttClient.publish(PUBLISH_TOPIC, str(random_temp).encode())
-    mqttClient.publish("baxi/output", "Hello, World {}".format(2*3))
+    mqttClient.publish(MQTT_PREFIX+"output", "Hello, World {}".format(2*3))
 
 
     if 0:
