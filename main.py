@@ -35,7 +35,7 @@ for i in range (10):
         mqttClient.publish(PUBLISH_TOPIC, "OTA: Now Git pulled...")
 
     else:
-        mqttClient.publish(PUBLISH_TOPIC, "Waiting OTA Cmd {}".format(i))
+        mqttClient.publish(PUBLISH_TOPIC, "GitVer={} Waiting OTA Cmd {}".format(gitver,i))
 
 if needGitOTAupdate==True:
         ugit.pull_all()
