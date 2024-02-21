@@ -77,7 +77,7 @@ mqttClient.subscribe(MQTT_PREFIX+"GitOTA")
 mqttClient.subscribe(MQTT_PREFIX+"ExtCMD_req")
 
 mqttClient.publish(MQTT_PREFIX+"status", "Idle!!5")
-mqttClient.publish(MQTT_PREFIX+"ExtCMD_req", "{0,1,0}")
+mqttClient.publish(MQTT_PREFIX+"ExtCMD_req", "[0,1,0]")
 
 
 print("Start3_2")
