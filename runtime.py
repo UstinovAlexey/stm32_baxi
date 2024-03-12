@@ -416,14 +416,14 @@ while (True):
        print("Read Status. ",end="")
        pin_in_mode=0
        ot.send(buildRerquest(0,0,Status_new*256)) #enable CH & DHW
-    #ot.send(buildRerquest(0,0,0x000)) #-disable boiler
+       #ot.send(buildRerquest(0,0,0x000)) #-disable boiler
 
-    time.sleep(0.06)
-    pin_in_mode=1 #enable read answer
-    time.sleep(0.5)
-    #print("Answer",hex(answer_h*65536+answer_l))
-    Status=hex(answer_l)
-    #print("Status Measured temp=",answer_l/256.0)
+       time.sleep(0.06)
+       pin_in_mode=1 #enable read answer
+       time.sleep(0.5)
+       #print("Answer",hex(answer_h*65536+answer_l))
+       Status=hex(answer_l)
+       #print("Status Measured temp=",answer_l/256.0)
     print("Status={} ASF_OEM={} ModulationLevel={} ".format(Status,ASF_OEM,ModLevel))
     mqttClient.publish(MQTT_PREFIX+"Status",Status)
     mqttClient.publish(MQTT_PREFIX+"ASF_OEM",ASF_OEM)
