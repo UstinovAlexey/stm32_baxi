@@ -412,9 +412,10 @@ while (True):
     #print(" ")
 
 
-    print("Read Status. ",end="")
-    pin_in_mode=0
-    ot.send(buildRerquest(0,0,Status_new*256)) #enable CH & DHW
+    if 0:
+       print("Read Status. ",end="")
+       pin_in_mode=0
+       ot.send(buildRerquest(0,0,Status_new*256)) #enable CH & DHW
     #ot.send(buildRerquest(0,0,0x000)) #-disable boiler
 
     time.sleep(0.06)
