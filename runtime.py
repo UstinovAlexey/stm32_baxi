@@ -76,7 +76,7 @@ mqttClient.subscribe(MQTT_PREFIX+"status")
 mqttClient.subscribe(MQTT_PREFIX+"GitOTA")
 mqttClient.subscribe(MQTT_PREFIX+"ExtCMD_req")
 
-mqttClient.publish(MQTT_PREFIX+"status", "Idle!!5")
+mqttClient.publish(MQTT_PREFIX+"status", "Set 0 to poweroff or 3 to poweron bioler5")
 mqttClient.publish(MQTT_PREFIX+"ExtCMD_req", "[0,1,0]")
 
 
@@ -414,7 +414,7 @@ while (True):
     #print(" ")
 
 
-    if 0:
+    if 1:
        print("Read Status. ",end="")
        pin_in_mode=0
        ot.send(buildRerquest(0,0,Status_new*256)) #enable CH & DHW

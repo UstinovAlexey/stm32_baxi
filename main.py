@@ -11,7 +11,7 @@ MQTT_BROKER = "192.168.20.55"
 #CLIENT_ID = "stm32_baxi"
 SUBSCRIBE_TOPIC = MQTT_PREFIX+"GitOTA"
 PUBLISH_TOPIC = MQTT_PREFIX+"GitOTA"
-gitver="V2.9"
+gitver="V2.10"
 needGitOTAupdate=False
 
 def sub_cb(topic, msg):
