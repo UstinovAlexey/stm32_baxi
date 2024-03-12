@@ -277,7 +277,7 @@ def buildRerquest(msg_type,data_id,data_value):
 
 
 #    0X90014000   01 001 40000
-Status='0x??''
+Status="0x??"
 
 while (True):
     #while(btn()==1):
