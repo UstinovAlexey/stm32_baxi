@@ -308,12 +308,12 @@ while (True):
        
 
     if Tset_need_set==True:
-        Tset_need_set=False
+        #Tset_need_set=False
         Tset_cur=Tset_new
         
         print("Set setpoint={}".format(Tset_new),end="")
         
-        pin_in_mode=0 #disable read answer
+        pin_in_me=0 #disable read answer
         ot.send(buildRerquest(1,1,Tset_new))
         time.sleep(0.06)
         pin_in_mode=1 #enable read answer
